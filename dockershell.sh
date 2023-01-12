@@ -9,12 +9,13 @@ fi
 image=$1
 version=$2
 name=$3
+gpu=$4
 
 docker container inspect ${name} 1>/dev/null 2>&1
 if [ $? -ne 0 ] ; then
   echo "Creating new container ${name}..."
   docker run -d --rm --name ${name} \
-        --user $(id -u):$(id -g) -e DISPLAY=$DISPLAY -e CONTAINER_NAME=${name} \
+        --user $(id -u):$(id -g) -e DISPLAY=$DISPLAY -e CONTAINER_NAME=${name} -e  NVIDIA_VISIBLE_DEVICES={$GPU}\
         --network host --ipc host --ulimit memlock=-1 --ulimit stack=67108864 --privileged \
         ${USER}/${image}:${version} 
 else
