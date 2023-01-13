@@ -29,7 +29,7 @@ def grab_path(list):
 
 
 def container_exists(container_name):
-    inspect_proc = run(f"docker container inspect " + container_name, shell=True, \
+    inspect_proc = run(f"nvidia-docker container inspect " + container_name, shell=True, \
                        stderr=DEVNULL, stdout=DEVNULL, encoding="UTF-8")
     return not bool(inspect_proc.returncode)
 
@@ -38,8 +38,8 @@ def bind_mount(src, dst):
     return f"""  -v "{src}:{dst}" \\\n"""
 
 
-def get_docker_cmd(args, gpu):
-    cmd = f"docker run -d --rm --name " + args.container_name + "_" + str(uuid.uuid1()) + "\\\n"
+def get_nvidia-docker_cmd(args, gpu):
+    cmd = f"nvidia-docker run -d --rm --name " + args.container_name + "_" + str(uuid.uuid1()) + "\\\n"
     cmd += f"  -e CONTAINER_NAME=" + args.container_name + " \\\n"
     cmd += "-e  NVIDIA_VISIBLE_DEVICES={" + str(gpu) + "} \\\n"
     cmd += f"  --mount type=bind,dst=/etc/machine-id,src=/etc/machine-id,readonly \\\n"
@@ -53,8 +53,8 @@ def run_cmd(cmd):
              stdout=PIPE,
              stderr=PIPE,
              shell=True)
-             # stdin=PIPE, #some docker cmds are being run -it, which this would break
-             # TODO: Setup docker to not run interactively anymore
+             # stdin=PIPE, #some nvidia-docker cmds are being run -it, which this would break
+             # TODO: Setup nvidia-docker to not run interactively anymore
 
     (out, err) = p.communicate()
     print(err.decode(), end=" ")
@@ -67,9 +67,9 @@ def main(args):
     for i in range(args.num_runs):
         if container_exists(args.container_name):
             pprint(f"Container named {args.container_name} already exists.  To remove existing container:")
-            pprint(f"\tdocker container rm {args.container_name}")
+            pprint(f"\tnvidia-docker container rm {args.container_name}")
             sys.exit(1)
-        cmd_str = get_docker_cmd(args, int(args.num_gpus % 7))
+        cmd_str = get_nvidia-docker_cmd(args, int(args.num_gpus % 7))
         print("#!/bin/bash")
         print(cmd_str)
         p = run_cmd(cmd_str)
