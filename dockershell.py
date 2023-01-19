@@ -41,7 +41,7 @@ def bind_mount(src, dst):
 def get_nvidia-docker_cmd(args, gpu):
     cmd = f"nvidia-docker run -d --rm --name " + args.container_name + "_" + str(uuid.uuid1()) + "\\\n"
     cmd += f"  -e CONTAINER_NAME=" + args.container_name + " \\\n"
-    cmd += "-e  NVIDIA_VISIBLE_DEVICES={" + str(gpu) + "} \\\n"
+    cmd += "-e  CUDA_VISIBLE_DEVICES={" + str(gpu) + "} \\\n"
     cmd += f"  --mount type=bind,dst=/etc/machine-id,src=/etc/machine-id,readonly \\\n"
     cmd += f"  --network host --ipc host --privileged --ulimit memlock=-1 --ulimit stack=67108864 \\\n"
     cmd += f"  {environ['USER']}/{args.image_name}:{args.image_version} \n"

@@ -15,7 +15,7 @@ nvidia-docker container inspect ${name} 1>/dev/null 2>&1
 if [ $? -ne 0 ] ; then
   echo "Creating new container ${name}..."
   nvidia-docker run -d --rm --name ${name} \
-        --user $(id -u):$(id -g) -e DISPLAY=$DISPLAY -e CONTAINER_NAME=${name} -e  NVIDIA_VISIBLE_DEVICES={$GPU}\
+        --user $(id -u):$(id -g) -e DISPLAY=$DISPLAY -e CONTAINER_NAME=${name} -e  CUDA_VISIBLE_DEVICES={$GPU}\
         --network host --ipc host --ulimit memlock=-1 --ulimit stack=67108864 --privileged \
         ${USER}/${image}:${version} 
 else
