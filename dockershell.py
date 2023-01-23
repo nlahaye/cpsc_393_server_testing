@@ -41,7 +41,7 @@ def bind_mount(src, dst):
 def get_nvidia_docker_cmd(args, gpu):
     cmd = f"nvidia-docker run -d --rm --name " + args.container_name + "_" + str(uuid.uuid1()) + "\\\n"
     cmd += f"  -e CONTAINER_NAME=" + args.container_name + " \\\n"
-    cmd += "-e  CUDA_VISIBLE_DEVICES={" + str(gpu) + "} \\\n"
+    cmd += "-e  CUDA_VISIBLE_DEVICES=" + str(gpu) + " \\\n"
     cmd += f"  --mount type=bind,dst=/etc/machine-id,src=/etc/machine-id,readonly \\\n"
     cmd += f"  --network host --ipc host --privileged --ulimit memlock=-1 --ulimit stack=67108864 \\\n"
     cmd += f"  {environ['USER']}/{args.image_name}:{args.image_version} \n"
@@ -69,7 +69,7 @@ def main(args):
             pprint(f"Container named {args.container_name} already exists.  To remove existing container:")
             pprint(f"\tnvidia-docker container rm {args.container_name}")
             sys.exit(1)
-        cmd_str = get_nvidia_docker_cmd(args, int(args.num_gpus % 7))
+        cmd_str = get_nvidia_docker_cmd(args, int(i % args.num_gpus))
         print("#!/bin/bash")
         print(cmd_str)
         p = run_cmd(cmd_str)
