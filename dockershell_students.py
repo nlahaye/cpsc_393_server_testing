@@ -39,7 +39,7 @@ def get_available_gpus():
     local_device_protos = device_lib.list_local_devices()
     return [x.name for x in local_device_protos if x.device_type == 'GPU']
 
-def get_nvidia_docker_cmd(config, gpu):
+def get_nvidia_docker_cmd(config):
     cmd = f"nvidia-docker run "
     if config["interactive"]:
         cmd += "-it "
@@ -52,7 +52,7 @@ def get_nvidia_docker_cmd(config, gpu):
 
     cmd += " --name " + container_name + "\\\n"
     cmd += "  -e CONTAINER_NAME=" + config["container_name"] + " \\\n"
-    cmd += "-e  CUDA_VISIBLE_DEVICES=" + str(gpu) + " \\\n"
+    cmd += "-e  CUDA_VISIBLE_DEVICES=" + str(config["gpu"]) + " \\\n"
     if config["interactive"]:
         cmd += "-e DISPLAY=$DISPLAY --entrypoint \"/bin/bash\" \\\n"
     cmd += "  --mount type=bind,dst=/etc/machine-id,src=/etc/machine-id,readonly \\\n"
@@ -77,22 +77,14 @@ def run_cmd(cmd):
     print(out.decode(), end=" ")
     return p
 
-
 def main(config):
-
-    if config["interactive"]:
-        config["num_runs"] = 1
-
-    for i in range(config["num_runs"]):
-        cmd_str = get_nvidia_docker_cmd(config, int(i % int(config["num_gpus"])))
+        cmd_str = get_nvidia_docker_cmd(config)
         print("#!/bin/bash")
         print(cmd_str)
         p = run_cmd(cmd_str)
-
 
 if __name__ == "__main__":
     args = parse_args()
     config = read_yaml(args.yaml)
     main(config)
-
 

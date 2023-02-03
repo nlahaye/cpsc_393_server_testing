@@ -1,0 +1,7 @@
+interactive: False
+container_name: mytest
+run_dir: /home/lahaye/test_rundir
+image_name: cpsc392_server_test
+image_version: latest
+gpu: 2
+
