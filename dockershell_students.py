@@ -55,6 +55,8 @@ def get_nvidia_docker_cmd(config):
     cmd += "-e  CUDA_VISIBLE_DEVICES=" + str(config["gpu"]) + " \\\n"
     if config["interactive"]:
         cmd += "-e DISPLAY=$DISPLAY --entrypoint \"/bin/bash\" \\\n"
+    else:
+        cmd += "--entrypoint " + config["entrypoint"]
     cmd += "  --mount type=bind,dst=/etc/machine-id,src=/etc/machine-id,readonly \\\n"
 
     #Top level deirectory that can have subdirectories for models, input, output, code, etc.

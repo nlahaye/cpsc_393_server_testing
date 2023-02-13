@@ -15,6 +15,6 @@ COPY run_test.sh /app
 COPY test2.py /app
 
 run chmod -R a+rwx /app
-
-ENTRYPOINT ["/app/run_test.sh"]
+ 
+#ENTRYPOINT ["/app/run_test.sh"]
 

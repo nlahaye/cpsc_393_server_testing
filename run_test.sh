@@ -1,6 +1,6 @@
 #!/bin/bash
 
-python3 'test2.py'
+python3 '/app/rundir/test2.py'
 
 
 
