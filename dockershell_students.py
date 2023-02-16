@@ -8,13 +8,12 @@ from os import environ
 from os.path import basename, split
 from subprocess import DEVNULL, run, Popen, PIPE
 
-from tensorflow.python.client import device_lib
 
 def read_yaml(fpath_yaml):
     yml_conf = None
     with open(fpath_yaml) as f_yaml:
-        yml_conf = yaml.load(f_yaml, Loader=yaml.FullLoader)
-    return 
+        yml_conf = yaml.safe_load(f_yaml)
+    return yml_conf
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -72,7 +71,6 @@ def run_cmd(cmd):
              stdout=PIPE,
              stderr=PIPE,
              shell=True)
-             # stdin=PIPE, #some nvidia-docker cmds are being run -it, which this would break
 
     (out, err) = p.communicate()
     print(err.decode(), end=" ")
@@ -81,9 +79,12 @@ def run_cmd(cmd):
 
 def main(config):
         cmd_str = get_nvidia_docker_cmd(config)
-        print("#!/bin/bash")
-        print(cmd_str)
-        p = run_cmd(cmd_str)
+        if config["interactive"]:
+            print("Copy and paste this command and hit enter to start interactive session inside container:")
+            print(cmd_str)
+        else:
+            p = run_cmd(cmd_str)
+
 
 if __name__ == "__main__":
     args = parse_args()
