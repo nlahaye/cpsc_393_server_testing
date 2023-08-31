@@ -7,11 +7,11 @@ if [ "$1" == "" ] ; then
 fi
 
 version=$1
-image=cpsc392_server_test
+image=cpsc393_student_image
 
 docker build --build-arg USER=${USER} \
   --network=host \
-  -t ${USER}/${image}:${version} .
+  -t ${image}:${version} .
 
 if [ $? -ne 0 ] ; then
     echo "Trouble with docker build"

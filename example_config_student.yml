@@ -1,7 +1,7 @@
 interactive: True
 container_name: mytest
 run_dir: /nfshome/lahaye/test_rundir
-image_name: cpsc392_server_test
+image_name: cpsc393_student_image
 image_version: latest
 gpu: 2
 entrypoint: "/app/rundir/code/run_test.sh"

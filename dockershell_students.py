@@ -62,7 +62,7 @@ def get_nvidia_docker_cmd(config):
     cmd += bind_mount(config["run_dir"], "/app/rundir/")
  
     cmd += "  --network host --ipc host --privileged --ulimit memlock=-1 --ulimit stack=67108864 \\\n"
-    cmd += " " +  environ["USER"] + "/" + config["image_name"] + ":" + config["image_version"] + "\n"
+    cmd += " " +  config["image_name"] + ":" + config["image_version"] + "\n"
     return cmd
 
 def run_cmd(cmd):
